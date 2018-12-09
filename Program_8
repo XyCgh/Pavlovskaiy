@@ -1,0 +1,146 @@
+#include <iostream>
+#include <stdlib.h>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+
+struct List
+{
+	char word[100];
+	int page[10];
+	List *next;
+	List *pred;
+};
+void CreateList(List *&head, int n, int *g)
+{
+	char w[100];
+	List *p;
+	char k;
+	cout << "Add an item to the list? (y/n) : ";
+	cin >> k;
+	int s = 0;
+	while (k == 'y')
+	{
+		p = new List;
+		cout << "Type the word: ";
+		cin >> w;
+		strcpy(p->word, w);
+		char h = 'y';
+		n = 0;
+		cout << "Enter the page number: " << endl;
+		while (h == 'y' && n < 10)
+		{
+			cin >> p->page[n];
+			n++;
+			cout << "More? (y/n) : ";
+			cin >> h;
+		}
+		g[s] = n;
+		s++;
+		p->next = head;
+		p->pred = head->pred;
+		head->pred = p;
+		p->pred->next = p;
+		cout << "Add an item to the list? (y/n): ";
+		cin >> k;
+	}
+	return;
+}
+int PrintList(List *&head, int *g)
+{
+	int s = 0;
+	List *p;
+	p = head->next;
+	if (head->next == head)
+	{
+		cout << "List is empty";
+		return 0;
+	}
+	else
+	{
+		cout << "Create index:" << endl;
+		while (p->next != head->next)
+		{
+			cout << p->word << " : ";
+			for (int i = 0; i < g[s]; i++)
+				if (i != g[s] - 1)
+					cout << p->page[i] << ",";
+				else
+					cout << p->page[i] << ".";
+			cout << endl;
+			p = p->next;
+			s++;
+		}
+	}
+	return 1;
+}
+void search(List *&head, int r, int *g)
+{
+	if (r)
+	{
+		int j = 0;
+		char w[100];
+		List *p;
+		p = head->next;
+		cout << "Set the word: ";
+		cin >> w;
+		int f = 0;
+		while (p->next != head->next)
+		{
+			if (strcmp(p->word, w) == 0)
+			{
+				cout << "stranicbl : ";
+				for (int i = 0; i < g[j]; i++)
+					if (i != g[j] - 1)
+						cout << p->page[i] << ",";
+					else
+						cout << p->page[i] << ".";
+				f = 1;
+			}
+			if (!f)
+				cout << "This word not met";
+			j++;
+			p = p->next;
+		}
+	}
+	return;
+}
+int main()
+{
+	char h;
+	while (1)
+	{
+		system("cls");
+		cout << "Create index? (y/n) :";
+		cin >> h;
+		switch (h)
+		{
+		case 'y':
+		{
+			List *head;
+			head = new List;
+			head->next = head;
+			head->pred = head;
+			int t = 0;
+			int k[10];
+			CreateList(head, t, k);
+			system("cls");
+			int r = PrintList(head, k);
+			char q;
+			cout << "To look up a word? (y/n) :";
+			cin >> q;
+			while (q == 'y')
+			{
+				search(head, r, k);
+				getch();
+				cout << << "To look up a word? (y/n) : " << endl;
+				cin >> q;
+			}
+			getch();
+		}
+		break;
+		case 'n':
+			return 0;
+		}
+	}
+}
